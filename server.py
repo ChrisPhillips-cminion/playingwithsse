@@ -1,23 +1,41 @@
+import asyncio
+from datetime import datetime
+import json
+from aiohttp import web
 
-import http.server
-import socketserver
-import time
+from aiohttp_sse import sse_response
 
-class SSERequestHandler(http.server.SimpleHTTPRequestHandler):
-    def do_GET(self):
-        if self.path == "/events":
-            self.send_response(200)
-            self.send_header("Content-Type", "text/event-stream")
-            self.end_headers()
 
-            while True:
-                event = {"data": f"Event {time.time()}"}
-                # print(event)
-                self.wfile.write(f"data: {event}\n\n".encode())
-                time.sleep(1)
+async def hello(request: web.Request) -> web.StreamResponse:
+    async with sse_response(request) as resp:
+        while resp.is_connected():
+            time_dict = {"time": f"Server Time : {datetime.now()}"}
+            data = json.dumps(time_dict, indent=2)
+            print(data)
+            await resp.send(data)
+            await asyncio.sleep(1)
+    return resp
 
-PORT = 8000
 
-with socketserver.TCPServer(("", PORT), SSERequestHandler) as httpd:
-    print(f"Serving on port {PORT}...")
-    httpd.serve_forever()
+async def index(_request: web.Request) -> web.StreamResponse:
+    html = """
+        <html>
+            <body>
+                <script>
+                    var eventSource = new EventSource("/hello");
+                    eventSource.addEventListener("message", event => {
+                        document.getElementById("response").innerText = event.data;
+                    });
+                </script>
+                <h1>Response from server:</h1>
+                <div id="response"></div>
+            </body>
+        </html>
+    """
+    return web.Response(text=html, content_type="text/html")
+
+
+app = web.Application()
+app.router.add_route("GET", "/hello", hello)
+app.router.add_route("GET", "/", index)
+web.run_app(app, host="127.0.0.1", port=8080)
