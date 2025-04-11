@@ -38,4 +38,4 @@ async def index(_request: web.Request) -> web.StreamResponse:
 app = web.Application()
 app.router.add_route("GET", "/hello", hello)
 app.router.add_route("GET", "/", index)
-web.run_app(app, host="127.0.0.1", port=8080)
+web.run_app(app, host="127.0.0.1", port=8000)
