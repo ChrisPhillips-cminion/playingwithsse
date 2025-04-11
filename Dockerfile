@@ -5,7 +5,7 @@ WORKDIR /app
 
 # install simple http server for serving static content
 # make the 'app' folder the current working directory
-RUN pip3 install aiohttp-sse
+RUN pip install aiohttp-sse
 # copy both 'package.json' and 'package-lock.json' (if available)
 COPY server.py ./
 
