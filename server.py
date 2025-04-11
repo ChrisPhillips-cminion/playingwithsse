@@ -12,6 +12,7 @@ class SSERequestHandler(http.server.SimpleHTTPRequestHandler):
 
             while True:
                 event = {"data": f"Event {time.time()}"}
+                # print(event)
                 self.wfile.write(f"data: {event}\n\n".encode())
                 time.sleep(1)
 
