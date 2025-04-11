@@ -39,7 +39,7 @@ objects:
       runPolicy: Serial
       source:
         git:
-          ref: master
+          ref: main
           uri: https://github.com/ChrisPhillips-cminion/playingwithsse
 
       strategy:
