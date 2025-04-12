@@ -46,7 +46,7 @@ objects:
         dockerStrategy:
           from:
             kind: ImageStreamTag
-            name: nodejs:latest
+            name: python:latest
             namespace: openshift
         type: Dockerfile
       failedBuildsHistoryLimit: 2
